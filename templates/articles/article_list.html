@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Article List{% endblock %}
+
+{% block content %}
+    <h1>Published Articles</h1>
+    <ul>
+        {% for article in articles %}
+            <li>
+                <h2>{{ article.title }}</h2>
+                <p>{{ article.text }}</p>
+                <p><strong>Tags:</strong> 
+                    {% for tag in article.tags.all %}
+                        {{ tag.name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </p>
+                <p>Author: {{ article.author.name }}</p>
+                <p>Published: {{ article.created_at }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

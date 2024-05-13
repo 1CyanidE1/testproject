@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Moderate Article</title>
+</head>
+<body>
+    <h1>Moderate Article: {{ article.title }}</h1>
+    <p>{{ article.text }}</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" name="action" value="publish">Publish</button>
+        <button type="submit" name="action" value="reject">Reject</button>
+        <textarea name="rejection_reason" placeholder="Reason for rejection (if rejecting)">{{ article.rejection_reason }}</textarea>
+    </form>
+</body>
+</html>
