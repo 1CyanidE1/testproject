@@ -6,13 +6,26 @@
     <h1>Moderation List</h1>
     <ul>
         {% for article in articles %}
-            <li>
-                <h2>{{ article.title }}</h2>
-                <p>{{ article.text }}</p>
-                <p>Author: {{ article.author.name }}</p>
-                <p>Submitted: {{ article.created_at }}</p>
-                <a href="{% url 'moderate_article' article.id %}" class="btn btn-primary">Moderate</a>
-            </li>
+            <div class="container">
+                <div class="d-flex justify-content-between">
+                    <div class="article-header">
+                        <h3 class="card-title text-muted">
+                            <a href="{% url 'article_detail' article.id %}">{{ article.title }}</a>
+                        </h3>
+                        <p class="text-muted">{{ article.author.name }}</p>
+                        <p class="text-muted">{{ article.author.email }}</p>
+                    </div>
+                    <small class="text-muted">{{ article.created_at|date:"F d, Y" }}</small>
+                </div>
+                <p class="card-text mt-3">{{ article.text|truncatewords:30 }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <p><strong>Тэги:</strong>
+                        {% for tag in article.tags.all %}
+                            {{ tag.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </p>
+                </div>
+            </div>
         {% endfor %}
     </ul>
 {% endblock %}

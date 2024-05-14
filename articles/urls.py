@@ -1,10 +1,12 @@
 from django.urls import path
 from .views import article_list, register, login_view, logout_view, moderation_list, moderate_article, create_article, \
-    user_profile, article_detail
+    user_profile, article_detail, edit_article, delete_article
 
 urlpatterns = [
     path('', article_list, name='article_list'),
     path('article/<int:article_id>/', article_detail, name='article_detail'),
+    path('edit/<int:article_id>/', edit_article, name='edit_article'),
+    path('delete/<int:article_id>/', delete_article, name='delete_article'),
     path('register/', register, name='register'),
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),

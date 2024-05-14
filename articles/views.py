@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.http import HttpResponseForbidden
 
 from .models import Article, Tag
-from .forms import CustomUserCreationForm, ArticleForm
+from .forms import CustomUserCreationForm, ArticleForm, ModerationForm
 
 
 def article_list(request):
@@ -57,23 +58,26 @@ def is_moderator(user):
 
 
 @login_required
-@user_passes_test(is_moderator)
+@user_passes_test(lambda u: u.is_staff)
 def moderate_article(request, article_id):
     article = get_object_or_404(Article, id=article_id)
 
     if request.method == 'POST':
-        status = request.POST.get('status')
-        rejection_reason = request.POST.get('rejection_reason', '')
+        form = ModerationForm(request.POST)
+        if form.is_valid():
+            action = form.cleaned_data['action']
+            if action == 'publish':
+                article.status = 'published'
+                article.rejection_reason = ''
+            elif action == 'reject':
+                article.status = 'rejected'
+                article.rejection_reason = form.cleaned_data['rejection_reason']
+            article.save()
+            return redirect('article_detail', article_id=article.id)
+    else:
+        form = ModerationForm()
 
-        article.status = status
-        if status == 'rejected':
-            article.rejection_reason = rejection_reason
-        else:
-            article.rejection_reason = ''
-        article.save()
-        return redirect('moderation_list')
-
-    return render(request, 'articles/moderate_article.html', {'article': article})
+    return render(request, 'articles/moderate_article.html', {'form': form, 'article': article})
 
 
 @login_required
@@ -86,6 +90,11 @@ def create_article(request):
             article.status = 'pending'
             article.save()
 
+            # Обработка тегов
+            tags = form.cleaned_data['tags']
+            for tag in tags:
+                tag.usage_count += 1
+                tag.save()
             form.save_m2m()
 
             return redirect('article_list')
@@ -97,7 +106,6 @@ def create_article(request):
         form = ArticleForm()
     return render(request, 'articles/create_article.html', {'form': form})
 
-
 @login_required
 def user_profile(request):
     published_articles = Article.objects.filter(author=request.user, status='published')
@@ -108,3 +116,33 @@ def user_profile(request):
         'pending_articles': pending_articles,
         'rejected_articles': rejected_articles
     })
+
+
+@login_required
+def edit_article(request, article_id):
+    article = get_object_or_404(Article, id=article_id, author=request.user)
+
+    if request.method == 'POST':
+        form = ArticleForm(request.POST, instance=article)
+        if form.is_valid():
+            article = form.save(commit=False)
+            article.status = 'pending'
+            article.save()
+            form.save_m2m()
+            return redirect('article_detail', article_id=article.id)
+    else:
+        form = ArticleForm(instance=article)
+
+    return render(request, 'articles/edit_article.html', {'form': form, 'article': article})
+
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def delete_article(request, article_id):
+    article = get_object_or_404(Article, id=article_id)
+
+    if request.method == 'POST':
+        article.delete()
+        return redirect('article_list')
+
+    return HttpResponseForbidden()
