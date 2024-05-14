@@ -191,3 +191,9 @@ def mark_as_read(request, notification_id):
     notification.is_read = True
     notification.save()
     return redirect('article_detail', article_id=notification.article.id)
+
+
+@login_required
+def clear_notifications(request):
+    Notification.objects.filter(user=request.user, is_read=False).update(is_read=True)
+    return redirect('/')

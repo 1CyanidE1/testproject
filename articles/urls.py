@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import article_list, register, login_view, logout_view, moderation_list, moderate_article, create_article, \
-    user_profile, article_detail, edit_article, delete_article, notification_list, mark_as_read
+    user_profile, article_detail, edit_article, delete_article, notification_list, mark_as_read, clear_notifications
 
 urlpatterns = [
     path('', article_list, name='article_list'),
@@ -16,4 +16,5 @@ urlpatterns = [
     path('profile/', user_profile, name='user_profile'),
     path('notifications/', notification_list, name='notification_list'),
     path('notifications/read/<int:notification_id>/', mark_as_read, name='mark_as_read'),
+    path('notifications/clear/', clear_notifications, name='clear_notifications'),
 ]
