@@ -1,34 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Moderation</title>
-</head>
-<body>
-    <h1>Articles for Moderation</h1>
+{% extends 'base.html' %}
 
-    {% if user.is_authenticated %}
-        <p>Logged in as: {{ user.name }}</p>
-        <form action="{% url 'logout' %}" method="post">
-            {% csrf_token %}
-            <button type="submit">Logout</button>
-        </form>
-    {% else %}
-        <p>You are not logged in.</p>
-    {% endif %}
+{% block title %}Moderation List{% endblock %}
 
+{% block content %}
+    <h1>Moderation List</h1>
     <ul>
         {% for article in articles %}
             <li>
                 <h2>{{ article.title }}</h2>
                 <p>{{ article.text }}</p>
-                <p><strong>Author:</strong> {{ article.author.name }}</p>
-                <p><strong>Tags:</strong> {% for tag in article.tags.all %}{{ tag.name }} {% endfor %}</p>
-                <p><strong>Created at:</strong> {{ article.created_at }}</p>
-                <p><strong>Updated at:</strong> {{ article.updated_at }}</p>
-                <a href="{% url 'moderate_article' article.id %}">Moderate</a>
+                <p>Author: {{ article.author.name }}</p>
+                <p>Submitted: {{ article.created_at }}</p>
+                <a href="{% url 'moderate_article' article.id %}" class="btn btn-primary">Moderate</a>
             </li>
         {% endfor %}
     </ul>
-</body>
-</html>
+{% endblock %}

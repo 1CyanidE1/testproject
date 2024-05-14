@@ -4,6 +4,9 @@
 
 {% block content %}
     <h1>Published Articles</h1>
+    {% if user.is_authenticated %}
+        <a href="{% url 'create_article' %}" class="btn btn-primary">Create New Article</a>
+    {% endif %}
     <ul>
         {% for article in articles %}
             <li>

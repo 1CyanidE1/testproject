@@ -1,17 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Moderate Article</title>
-</head>
-<body>
-    <h1>Moderate Article: {{ article.title }}</h1>
+{% extends 'base.html' %}
+
+{% block title %}Moderate Article{% endblock %}
+
+{% block content %}
+    <h1>Moderate Article</h1>
+    <h2>{{ article.title }}</h2>
     <p>{{ article.text }}</p>
     <form method="post">
         {% csrf_token %}
-        <button type="submit" name="action" value="publish">Publish</button>
-        <button type="submit" name="action" value="reject">Reject</button>
-        <textarea name="rejection_reason" placeholder="Reason for rejection (if rejecting)">{{ article.rejection_reason }}</textarea>
+        <label for="status">Status:</label>
+        <select id="status" name="status">
+            <option value="pending" {% if article.status == 'pending' %}selected{% endif %}>Pending</option>
+            <option value="published" {% if article.status == 'published' %}selected{% endif %}>Published</option>
+            <option value="rejected" {% if article.status == 'rejected' %}selected{% endif %}>Rejected</option>
+        </select>
+        <br>
+        <label for="rejection_reason">Rejection Reason:</label>
+        <textarea id="rejection_reason" name="rejection_reason">{{ article.rejection_reason }}</textarea>
+        <br>
+        <button type="submit" class="btn btn-primary">Save</button>
     </form>
-</body>
-</html>
+{% endblock %}

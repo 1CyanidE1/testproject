@@ -87,3 +87,56 @@ nav a {
 nav a:hover {
     text-decoration: underline;
 }
+
+/* Button Styles */
+.btn {
+    display: inline-block;
+    font-size: 16px;
+    padding: 10px 20px;
+    margin: 10px 0;
+    border-radius: 4px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+a.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    color: white;
+    background-color: #007BFF;
+    border-radius: 4px;
+    text-align: center;
+    text-decoration: none;
+}
+
+a.btn:hover {
+    background-color: #0056b3;
+}
+
+a.btn-danger {
+    background-color: #dc3545;
+}
+
+a.btn-danger:hover {
+    background-color: #c82333;
+}
