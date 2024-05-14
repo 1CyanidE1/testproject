@@ -164,3 +164,28 @@ a.btn-danger:hover {
 .align-items-center {
     align-items: center !important;
 }
+
+.select2-container--default .select2-selection--multiple {
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    min-height: 38px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #007bff;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    color: #fff;
+    padding: 0.25rem 0.5rem;
+    margin: 0.2rem 0.1rem;
+    display: inline-block;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

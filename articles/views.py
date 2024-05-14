@@ -4,13 +4,19 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponseForbidden
 
-from .models import Article, Tag
+from .models import Article, Tag, Notification, CustomUser
 from .forms import CustomUserCreationForm, ArticleForm, ModerationForm, SearchForm
+from .utils import send_notification
 
 
 def article_list(request):
+    unread_notifications_count = Notification.objects.filter(user=request.user, is_read=False).count()
     form = SearchForm(request.GET)
     articles = Article.objects.filter(status='published').order_by('-created_at')
+
+    context = {
+        'unread_notifications_count': unread_notifications_count,
+    }
 
     if form.is_valid():
         query = form.cleaned_data.get('query')
@@ -81,9 +87,19 @@ def moderate_article(request, article_id):
             if action == 'publish':
                 article.status = 'published'
                 article.rejection_reason = ''
+                send_notification(
+                    article.author,
+                    article,
+                    f'Статья {article.title} опубликована!',
+                )
             elif action == 'reject':
                 article.status = 'rejected'
                 article.rejection_reason = form.cleaned_data['rejection_reason']
+                send_notification(
+                    article.author,
+                    article,
+                    f'Статья {article.title} отклонена!',
+                )
             article.save()
             return redirect('article_detail', article_id=article.id)
     else:
@@ -101,8 +117,14 @@ def create_article(request):
             article.author = request.user
             article.status = 'pending'
             article.save()
+            staff_users = CustomUser.objects.filter(is_staff=True)
+            for staff_user in staff_users:
+                send_notification(
+                    staff_user,
+                    article,
+                    f'Статья {article.title} ожидает модерации!'
+                )
 
-            # Обработка тегов
             tags = form.cleaned_data['tags']
             for tag in tags:
                 tag.usage_count += 1
@@ -110,13 +132,10 @@ def create_article(request):
             form.save_m2m()
 
             return redirect('article_list')
-        else:
-            print(form.errors)
-            print(request.POST.getlist('tags'))
-            print(Tag.objects.filter(id__in=request.POST.getlist('tags')))
     else:
         form = ArticleForm()
     return render(request, 'articles/create_article.html', {'form': form})
+
 
 @login_required
 def user_profile(request):
@@ -158,3 +177,17 @@ def delete_article(request, article_id):
         return redirect('article_list')
 
     return HttpResponseForbidden()
+
+
+@login_required
+def notification_list(request):
+    notifications = Notification.objects.filter(is_read=False)
+    return render(request, 'articles/notifications.html', {'notifications': notifications})
+
+
+@login_required
+def mark_as_read(request, notification_id):
+    notification = get_object_or_404(Notification, id=notification_id, user=request.user)
+    notification.is_read = True
+    notification.save()
+    return redirect('article_detail', article_id=notification.article.id)

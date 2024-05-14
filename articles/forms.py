@@ -14,7 +14,7 @@ class CustomUserCreationForm(UserCreationForm):
 class ArticleForm(forms.ModelForm):
     tags = forms.ModelMultipleChoiceField(
         queryset=Tag.objects.all(),
-        widget=Select2MultipleWidget(attrs={'class': 'select2'}),
+        widget=Select2MultipleWidget(attrs={'class': 'js-example-basic-multiple'}),
         required=False
     )
 
