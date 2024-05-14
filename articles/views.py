@@ -5,12 +5,24 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponseForbidden
 
 from .models import Article, Tag
-from .forms import CustomUserCreationForm, ArticleForm, ModerationForm
+from .forms import CustomUserCreationForm, ArticleForm, ModerationForm, SearchForm
 
 
 def article_list(request):
+    form = SearchForm(request.GET)
     articles = Article.objects.filter(status='published').order_by('-created_at')
-    return render(request, 'articles/article_list.html', {'articles': articles})
+
+    if form.is_valid():
+        query = form.cleaned_data.get('query')
+        tags = form.cleaned_data.get('tags')
+
+        if query:
+            articles = articles.filter(title__icontains=query)
+
+        if tags:
+            articles = articles.filter(tags__in=tags).distinct()
+
+    return render(request, 'articles/article_list.html', {'articles': articles, 'form': form})
 
 
 def article_detail(request, article_id):

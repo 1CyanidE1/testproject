@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django_select2.forms import Select2MultipleWidget
+from django_select2.forms import Select2MultipleWidget, ModelSelect2MultipleWidget
 
 from .models import CustomUser, Article, Tag
 
@@ -27,3 +27,18 @@ class ModerationForm(forms.Form):
     action = forms.ChoiceField(choices=[('publish', 'Publish'), ('reject', 'Reject')])
     rejection_reason = forms.CharField(widget=forms.Textarea, required=False)
 
+
+class SearchForm(forms.Form):
+    query = forms.CharField(
+        label='Search',
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(),
+        required=False,
+        widget=ModelSelect2MultipleWidget(
+            attrs={'class': 'form-control select2'}
+        ),
+    )
