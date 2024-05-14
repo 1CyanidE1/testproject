@@ -181,7 +181,7 @@ def delete_article(request, article_id):
 
 @login_required
 def notification_list(request):
-    notifications = Notification.objects.filter(is_read=False)
+    notifications = Notification.objects.filter(user=request.user, is_read=False)
     return render(request, 'articles/notifications.html', {'notifications': notifications})
 
 
