@@ -9,6 +9,8 @@ urlpatterns = [
     path('logout/', logout_view, name='logout'),
     path('moderation/', moderation_list, name='moderation_list'),
     path('moderate/<int:article_id>/', moderate_article, name='moderate_article'),
+    # path('approve/<int:article_id>/', approve_article, name='approve_article'),
+    # path('reject/<int:article_id>/', reject_article, name='reject_article'),
     path('create/', create_article, name='create_article'),
     path('profile/', user_profile, name='user_profile'),
 ]

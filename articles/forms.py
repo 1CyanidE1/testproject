@@ -14,14 +14,14 @@ class ArticleForm(forms.ModelForm):
 
     class Meta:
         model = Article
-        fields = ['title', 'text', 'tags', 'new_tags']
-        widgets = {
-            'tags': forms.CheckboxSelectMultiple,
-        }
+        fields = ['title', 'text', 'new_tags']
+        # widgets = {
+        #     'tags': forms.SelectMultiple,
+        # }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['tags'].queryset = Tag.objects.all().order_by('-usage_count')[:10]
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['tags'].queryset = Tag.objects.all().order_by('-usage_count')[:10]
 
     def save(self, commit=True):
         article = super().save(commit=False)
