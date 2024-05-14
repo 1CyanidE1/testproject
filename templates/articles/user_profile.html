@@ -3,32 +3,102 @@
 {% block title %}User Profile{% endblock %}
 
 {% block content %}
-    <h1>User Profile</h1>
-    <h2>User Information</h2>
-    <p><strong>Username:</strong> {{ user.username }}</p>
-    <p><strong>Name:</strong> {{ user.name }}</p>
-    <p><strong>Email:</strong> {{ user.email }}</p>
+        <h1>{{ user.username }}</h1>
+        <h5>User Information</h5>
+        <p><strong>Name:</strong> {{ user.name }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
 
-    <h2>Published Articles</h2>
-    <ul>
-        {% for article in published_articles %}
-            <li>{{ article.title }}</li>
-        {% endfor %}
-    </ul>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="published-tab" data-toggle="tab" href="#published" role="tab" aria-controls="published" aria-selected="true">Опубликованные</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="pending-tab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="false">На модерации</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="rejected-tab" data-toggle="tab" href="#rejected" role="tab" aria-controls="rejected" aria-selected="false">Отклоненные</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="published" role="tabpanel" aria-labelledby="published-tab">
+                <ul>
+                    {% for article in published_articles %}
+                        <div class="container">
+                            <div class="d-flex justify-content-between">
+                                <div class="article-header">
+                                    <h3 class="card-title text-muted">
+                                        <a href="{% url 'article_detail' article.id %}">{{ article.title }}</a>
+                                    </h3>
+                                    <p class="text-muted">{{ article.author.name }}</p>
+                                    <p class="text-muted">{{ article.author.email }}</p>
+                                </div>
+                                <small class="text-muted">{{ article.created_at|date:"F d, Y" }}</small>
+                            </div>
+                            <p class="card-text mt-3">{{ article.text|truncatewords:30 }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p><strong>Тэги:</strong>
+                                    {% for tag in article.tags.all %}
+                                        {{ tag.name }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                </p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pending-tab">
+                <ul>
+                    {% for article in pending_articles %}
+                        <div class="container">
+                            <div class="d-flex justify-content-between">
+                                <div class="article-header">
+                                    <h3 class="card-title text-muted">
+                                        <a href="{% url 'article_detail' article.id %}">{{ article.title }}</a>
+                                    </h3>
+                                    <p class="text-muted">{{ article.author.name }}</p>
+                                    <p class="text-muted">{{ article.author.email }}</p>
+                                </div>
+                                <small class="text-muted">{{ article.created_at|date:"F d, Y" }}</small>
+                            </div>
+                            <p class="card-text mt-3">{{ article.text|truncatewords:30 }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p><strong>Тэги:</strong>
+                                    {% for tag in article.tags.all %}
+                                        {{ tag.name }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                </p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="tab-pane fade" id="rejected" role="tabpanel" aria-labelledby="rejected-tab">
+                <ul>
+                    {% for article in rejected_articles %}
+                        <div class="container">
+                            <div class="d-flex justify-content-between">
+                                <div class="article-header">
+                                    <h3 class="card-title text-muted">
+                                        <a href="{% url 'article_detail' article.id %}">{{ article.title }}</a>
+                                    </h3>
+                                    <p class="text-muted">{{ article.author.name }}</p>
+                                    <p class="text-muted">{{ article.author.email }}</p>
+                                </div>
+                                <small class="text-muted">{{ article.created_at|date:"F d, Y" }}</small>
+                            </div>
+                            <p class="card-text mt-3">{{ article.text|truncatewords:30 }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p><strong>Тэги:</strong>
+                                    {% for tag in article.tags.all %}
+                                        {{ tag.name }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                </p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
 
-    <h2>Pending Articles</h2>
-    <ul>
-        {% for article in pending_articles %}
-            <li>{{ article.title }}</li>
-        {% endfor %}
-    </ul>
-
-    <h2>Rejected Articles</h2>
-    <ul>
-        {% for article in rejected_articles %}
-            <li>{{ article.title }}</li>
-        {% endfor %}
-    </ul>
-
-    <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+        <a href="{% url 'logout' %}" class="btn btn-danger mt-3">Logout</a>
 {% endblock %}

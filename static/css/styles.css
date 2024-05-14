@@ -140,3 +140,27 @@ a.btn-danger {
 a.btn-danger:hover {
     background-color: #c82333;
 }
+
+.article-header {
+    display: block;
+}
+
+.card-title {
+    margin-bottom: 0;
+}
+
+.card-subtitle {
+    margin: 0;
+}
+
+.d-flex {
+    display: flex !important;
+}
+
+.justify-content-between {
+    justify-content: space-between !important;
+}
+
+.align-items-center {
+    align-items: center !important;
+}
