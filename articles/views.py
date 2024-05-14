@@ -10,13 +10,8 @@ from .utils import send_notification
 
 
 def article_list(request):
-    unread_notifications_count = Notification.objects.filter(user=request.user, is_read=False).count()
     form = SearchForm(request.GET)
     articles = Article.objects.filter(status='published').order_by('-created_at')
-
-    context = {
-        'unread_notifications_count': unread_notifications_count,
-    }
 
     if form.is_valid():
         query = form.cleaned_data.get('query')
