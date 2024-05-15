@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
-{% block title %}Edit Article{% endblock %}
+{% block title %}Редактирование{% endblock %}
 
 {% block content %}
     <div class="container">
-        <h1>Edit Article</h1>
+        <h1>Редактирование</h1>
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Submit for Moderation</button>
+            <button type="submit" class="btn btn-primary">Отправить</button>
         </form>
     </div>
 {% endblock %}

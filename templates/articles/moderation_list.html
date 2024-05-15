@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
-{% block title %}Moderation List{% endblock %}
+{% block title %}Модерация{% endblock %}
 
 {% block content %}
-    <h1>Moderation List</h1>
+    <h1>Статьи на модерации</h1>
     <ul>
         {% for article in articles %}
             <div class="container">
@@ -16,7 +16,7 @@
                             <p class="text-muted">{{ article.author.username }}</p>
                             <p class="text-muted">{{ article.author.email }}</p>
                         {% else %}
-                            <p class="text-muted">Author Unknown</p>
+                            <p class="text-muted">Неизвестный автор</p>
                         {% endif %}
                     </div>
                     <small class="text-muted">{{ article.created_at|date:"F d, Y" }}</small>

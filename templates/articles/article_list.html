@@ -3,9 +3,9 @@
 {% block title %}Article List{% endblock %}
 
 {% block content %}
-    <h1 class="mb-4">Published Articles</h1>
+    <h1 class="mb-4">Опубликованные статьи</h1>
     {% if user.is_authenticated %}
-        <a href="{% url 'create_article' %}" class="btn btn-primary mb-4">Create New Article</a>
+        <a href="{% url 'create_article' %}" class="btn btn-primary mb-4">Создать новую статью</a>
     {% endif %}
     
     <form method="get" class="mb-4">
@@ -17,7 +17,14 @@
 {#            {{ form.tags.label_tag }}#}
 {#            {{ form.tags }}#}
 {#        </div>#}
-        <button type="submit" class="btn btn-primary">Search</button>
+        {% if query %}
+            <div class="col-auto">
+                <a href="{% url 'article_list' %}" class="btn btn-danger">Назад</a>
+            </div>
+        {% endif %}
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Поиск</button>
+        </div>
     </form>
     
     {% for article in articles %}
@@ -31,7 +38,7 @@
                         <p class="text-muted">{{ article.author.username }}</p>
                         <p class="text-muted">{{ article.author.email }}</p>
                     {% else %}
-                        <p class="text-muted">Author Unknown</p>
+                        <p class="text-muted">Неизвестный автор</p>
                     {% endif %}
                 </div>
                 <small class="text-muted">{{ article.created_at|date:"F d, Y" }}</small>
@@ -65,11 +72,10 @@
                     return {
                         id: term,
                         text: term,
-                        newTag: true // add additional parameters
+                        newTag: true
                     };
                 },
                 insertTag: function(data, tag) {
-                    // Insert the tag at the end of the results
                     data.push(tag);
                 }
             });

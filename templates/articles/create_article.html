@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
-{% block title %}Create Article{% endblock %}
+{% block title %}Создание статьи{% endblock %}
 
 {% block content %}
-    <h1>Create Article</h1>
+    <h1>Новая статья</h1>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Create</button>
+        <button type="submit">Создать</button>
     </form>
 {% endblock %}
 
@@ -15,6 +15,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     <<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/i18n/ru.js"></script>
     <script>
         $(document).ready(function() {
             $('.js-example-basic-multiple').select2({
@@ -22,7 +23,8 @@
                 allowClear: true,
                 width: '100%',
                 tags: true,
-                tokenSeparators: [',', ' ']
+                tokenSeparators: [',', ' '],
+                language: 'ru'
             });
         });
     </script>

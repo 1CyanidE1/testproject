@@ -3,9 +3,11 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponseForbidden
+from django.db.models import Q
+
 
 from .models import Article, Tag, Notification, CustomUser
-from .forms import CustomUserCreationForm, ArticleForm, ModerationForm, SearchForm
+from .forms import CustomUserCreationForm, ArticleForm, ModerationForm, SearchForm, CustomAuthenticationForm
 from .utils import send_notification
 
 
@@ -18,12 +20,14 @@ def article_list(request):
         tags = form.cleaned_data.get('tags')
 
         if query:
-            articles = articles.filter(title__icontains=query)
+            articles = articles.filter(
+                Q(title__icontains=query) | Q(text__icontains=query)
+            )
 
         if tags:
             articles = articles.filter(tags__in=tags).distinct()
 
-    return render(request, 'articles/article_list.html', {'articles': articles, 'form': form})
+    return render(request, 'articles/article_list.html', {'articles': articles, 'form': form, 'query': query,})
 
 
 def article_detail(request, article_id):
@@ -45,13 +49,13 @@ def register(request):
 
 def login_view(request):
     if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
+        form = CustomAuthenticationForm(data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
             return redirect('article_list')
     else:
-        form = AuthenticationForm()
+        form = CustomAuthenticationForm()
     return render(request, 'articles/login.html', {'form': form})
 
 
@@ -85,7 +89,7 @@ def moderate_article(request, article_id):
                 send_notification(
                     article.author,
                     article,
-                    f'Статья {article.title} опубликована!',
+                    f'Статья "{article.title}" опубликована!',
                 )
             elif action == 'reject':
                 article.status = 'rejected'
@@ -93,7 +97,7 @@ def moderate_article(request, article_id):
                 send_notification(
                     article.author,
                     article,
-                    f'Статья {article.title} отклонена!',
+                    f'Статья "{article.title}" отклонена!',
                 )
             article.save()
             return redirect('article_detail', article_id=article.id)
@@ -117,7 +121,7 @@ def create_article(request):
                 send_notification(
                     staff_user,
                     article,
-                    f'Статья {article.title} ожидает модерации!'
+                    f'Статья "{article.title}" ожидает модерации!'
                 )
 
             tags = form.cleaned_data['tags']
